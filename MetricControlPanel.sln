@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricApp", "MetricApp\MetricApp.csproj", "{7C6F6AC9-4D72-403F-BC82-3C7F1E0E8096}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricLogic", "MetricLogic\MetricLogic.csproj", "{4C20EC27-2A22-4F13-A480-022F09AAF14B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C6F6AC9-4D72-403F-BC82-3C7F1E0E8096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C6F6AC9-4D72-403F-BC82-3C7F1E0E8096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C6F6AC9-4D72-403F-BC82-3C7F1E0E8096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C6F6AC9-4D72-403F-BC82-3C7F1E0E8096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C20EC27-2A22-4F13-A480-022F09AAF14B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C20EC27-2A22-4F13-A480-022F09AAF14B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C20EC27-2A22-4F13-A480-022F09AAF14B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C20EC27-2A22-4F13-A480-022F09AAF14B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7737C818-5660-4E74-83C8-A2E65EAEB0B0}
+	EndGlobalSection
+EndGlobal
