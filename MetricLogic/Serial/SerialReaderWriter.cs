@@ -3,6 +3,7 @@ using MetricLogic.Serial.Helpers;
 using MetricLogic.Serial.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,8 @@ namespace MetricLogic.Serial
         private CancellationToken readCT;
 
         private SerialMessage message;
-        private int newByte;
+        private int newByte = -1;
+        private bool connectionEstablished = false;
 
         public void Begin(SerialConnection connection)
         {
@@ -44,7 +46,10 @@ namespace MetricLogic.Serial
             {
                 while (_connection.port.IsOpen)
                 {
-                    tryToRead();
+                    if (connectionEstablished)
+                        tryToRead();
+                    else
+                        establishConnection();
 
                     if (readCT.IsCancellationRequested)
                     {
@@ -60,12 +65,19 @@ namespace MetricLogic.Serial
             {
                 if (_connection.port.BytesToRead > 0)
                 {
-                    newByte = _connection.port.ReadByte();
+                    readNewByte();
                     callbackRawData();
                     decodeMessage();
+                    newByte = -1;
                 }
             }
             catch (TimeoutException) { }
+        }
+
+        private void readNewByte()
+        {
+            if(newByte == -1)
+                newByte = _connection.port.ReadByte();
         }
 
         private void callbackRawData()
@@ -102,6 +114,26 @@ namespace MetricLogic.Serial
         {
             _connection._listener.OnSerialReceived(message);
             message = SerialMessage.Empty;
+        }
+
+        private void establishConnection()
+        {
+            Stopwatch timeout = new Stopwatch();
+            timeout.Start();
+
+            while (newByte != (int)SerialHeaderEnum.HELLO)
+            {
+                if (_connection.port.BytesToRead > 0)
+                {
+                    newByte = _connection.port.ReadByte();
+                    callbackRawData();
+
+                    if (timeout.ElapsedMilliseconds > 5000)
+                        throw new Exception("Connection not established: timeout");
+                }
+            }
+
+            connectionEstablished = true;
         }
 
         public void SetReadCT(CancellationToken token)
