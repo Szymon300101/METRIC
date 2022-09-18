@@ -6,12 +6,13 @@ using MetricLogic.Serial.Models;
 
 namespace MetricApp
 {
-    public partial class Form1 : Form, ISerialStateListener, IBoardModeListener
+    public partial class Form1 : Form, ISerialStateListener, IBoardModeListener, IRawSerialListener
     {
         private static readonly int BAUD_RATE = 115200;
 
         private delegate void SerialStateCallback(SerialStateEnum state);
         private delegate void BoardModeCallback(BoardModeEnum mode);
+        private delegate void RawSerialCallback(int value);
 
         SerialConnection connection;
         BoardMenager board;
@@ -25,6 +26,7 @@ namespace MetricApp
             board.AddModeListener(this);
             connection.AddStateListener(this);
             connection.AddSerialListener(board);
+            connection.AddRawSerialListener(this);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -67,23 +69,29 @@ namespace MetricApp
 
         private void displayBoardMode(BoardModeEnum mode)
         {
+            modeIdleRadio.Font = new Font(modeIdleRadio.Font, FontStyle.Regular);
+            modeReadRadio.Font = new Font(modeReadRadio.Font, FontStyle.Regular);
+            modeScanRadio.Font = new Font(modeScanRadio.Font, FontStyle.Regular);
             switch (mode)
             {
                 case BoardModeEnum.idle:
                     modeIdleRadio.Font = new Font(modeIdleRadio.Font, FontStyle.Bold);
+                    modeIdleRadio.Checked = true;
                     break;
                 case BoardModeEnum.read:
                     modeReadRadio.Font = new Font(modeReadRadio.Font, FontStyle.Bold);
+                    modeReadRadio.Checked = true;
                     break;
                 case BoardModeEnum.scan:
                     modeScanRadio.Font = new Font(modeScanRadio.Font, FontStyle.Bold);
+                    modeScanRadio.Checked = true;
                     break;
             }
         }
 
         public void OnSerialStateChange(SerialStateEnum state)
         {
-            if (this.testOutLabel.InvokeRequired)
+            if (this.rawSerialLog.InvokeRequired)
             {
                 SerialStateCallback d = new SerialStateCallback(displaySerialState);
                 this.Invoke(d, new object[] { state });
@@ -96,7 +104,7 @@ namespace MetricApp
 
         public void OnBoardModeChanged(BoardModeEnum mode)
         {
-            if (this.testOutLabel.InvokeRequired)
+            if (this.rawSerialLog.InvokeRequired)
             {
                 BoardModeCallback d = new BoardModeCallback(displayBoardMode);
                 this.Invoke(d, new object[] { mode });
@@ -106,6 +114,24 @@ namespace MetricApp
                 displayBoardMode(mode);
             }
 
+        }
+
+        public void OnSerialByte(int value)
+        {
+            if (this.rawSerialLog.InvokeRequired)
+            {
+                RawSerialCallback d = new RawSerialCallback(appendRawSerialLog);
+                this.Invoke(d, new object[] { value });
+            }
+            else
+            {
+                appendRawSerialLog(value);
+            }
+        }
+
+        private void appendRawSerialLog(int value)
+        {
+            rawSerialLog.Text = value.ToString() + "\n" + rawSerialLog.Text;
         }
 
         private void modeIdleRadio_CheckedChanged(object sender, EventArgs e)

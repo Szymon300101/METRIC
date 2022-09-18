@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace MetricLogic.Helpers
 {
-    public enum BoardModeEnum
+    public interface IRawSerialListener
     {
-        idle = 0,
-        read = 1,
-        scan = 2
+        void OnSerialByte(int value);
     }
 }

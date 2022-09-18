@@ -12,7 +12,7 @@ namespace MetricLogic.Serial.Helpers
         ACK = 1,
         HELLO = 2,
         READING = 3,
-        MODE = 4,
-        NULL = 255
+        SCAN = 4,
+        MODE = 5
     }
 }

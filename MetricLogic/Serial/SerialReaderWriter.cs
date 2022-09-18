@@ -1,4 +1,5 @@
-﻿using MetricLogic.Serial.Helpers;
+﻿using MetricLogic.Helpers;
+using MetricLogic.Serial.Helpers;
 using MetricLogic.Serial.Models;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,12 @@ namespace MetricLogic.Serial
     internal class SerialReaderWriter : ISerialCommunicator
     {
         private SerialConnection _connection;
+        private IRawSerialListener _rawSerialListener;
         private CancellationToken readCT;
 
         private SerialMessage message;
+        private int newByte;
+
         public void Begin(SerialConnection connection)
         {
             _connection = connection;
@@ -56,10 +60,18 @@ namespace MetricLogic.Serial
             {
                 if (_connection.port.BytesToRead > 0)
                 {
+                    newByte = _connection.port.ReadByte();
+                    callbackRawData();
                     decodeMessage();
                 }
             }
             catch (TimeoutException) { }
+        }
+
+        private void callbackRawData()
+        {
+            if (_rawSerialListener != null)
+                _rawSerialListener.OnSerialByte(newByte);
         }
 
         private void decodeMessage()
@@ -78,12 +90,12 @@ namespace MetricLogic.Serial
 
         private void readMessageHeader()
         {
-            message.HeaderFromInt(_connection.port.ReadByte());
+            message.HeaderFromInt(newByte);
         }
 
         private void readMessageValue()
         {
-            message.Value = _connection.port.ReadByte();
+            message.Value = newByte;
         }
 
         private void callbackNewMessage()
@@ -95,6 +107,10 @@ namespace MetricLogic.Serial
         public void SetReadCT(CancellationToken token)
         {
             readCT = token;
+        }
+        public void SetRawSerialListener(IRawSerialListener rawSerialListener)
+        {
+            _rawSerialListener = rawSerialListener;
         }
     }
 }

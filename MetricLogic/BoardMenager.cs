@@ -59,8 +59,6 @@ namespace MetricLogic
                 case SerialHeaderEnum.MODE:
                     Mode = EnumUtils.EnumFromInt<BoardModeEnum>(msg.Value);
                     break;
-                case SerialHeaderEnum.NULL:
-                    break;
                 default:
                     break;
             }

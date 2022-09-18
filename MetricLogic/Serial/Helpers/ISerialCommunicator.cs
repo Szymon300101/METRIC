@@ -1,4 +1,5 @@
-﻿using MetricLogic.Serial.Models;
+﻿using MetricLogic.Helpers;
+using MetricLogic.Serial.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace MetricLogic.Serial.Helpers
         internal void Read();
         internal void Send(SerialMessage msg);
         internal void SetReadCT(CancellationToken token);
+        internal void SetRawSerialListener(IRawSerialListener rawSerialListener);
     }
 }

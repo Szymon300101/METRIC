@@ -8,6 +8,7 @@ using System.Threading;
 using System.ComponentModel;
 using MetricLogic.Serial.Helpers;
 using MetricLogic.Serial.Models;
+using MetricLogic.Helpers;
 
 namespace MetricLogic.Serial
 {
@@ -54,6 +55,11 @@ namespace MetricLogic.Serial
         public void AddStateListener(ISerialStateListener stateListener)
         {
             this._stateListener = stateListener;
+        }
+
+        public void AddRawSerialListener(IRawSerialListener rawSerialListener)
+        {
+            communicator.SetRawSerialListener(rawSerialListener);
         }
 
         public void Connect(string portName, int baudRate)

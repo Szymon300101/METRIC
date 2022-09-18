@@ -34,13 +34,15 @@
             this.connectBtn = new System.Windows.Forms.Button();
             this.portLabel = new System.Windows.Forms.Label();
             this.portCombo = new System.Windows.Forms.ComboBox();
-            this.testOutLabel = new System.Windows.Forms.Label();
+            this.rawSerialLog = new System.Windows.Forms.Label();
             this.modeIdleRadio = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.modeScanRadio = new System.Windows.Forms.RadioButton();
             this.modeReadRadio = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.connectionBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // connectionBox
@@ -105,14 +107,13 @@
             this.portCombo.Size = new System.Drawing.Size(106, 28);
             this.portCombo.TabIndex = 0;
             // 
-            // testOutLabel
+            // rawSerialLog
             // 
-            this.testOutLabel.AutoSize = true;
-            this.testOutLabel.Location = new System.Drawing.Point(115, 139);
-            this.testOutLabel.Name = "testOutLabel";
-            this.testOutLabel.Size = new System.Drawing.Size(50, 20);
-            this.testOutLabel.TabIndex = 1;
-            this.testOutLabel.Text = "label1";
+            this.rawSerialLog.BackColor = System.Drawing.SystemColors.Control;
+            this.rawSerialLog.Location = new System.Drawing.Point(6, 26);
+            this.rawSerialLog.Name = "rawSerialLog";
+            this.rawSerialLog.Size = new System.Drawing.Size(76, 260);
+            this.rawSerialLog.TabIndex = 1;
             // 
             // modeIdleRadio
             // 
@@ -164,14 +165,24 @@
             this.modeReadRadio.UseVisualStyleBackColor = true;
             this.modeReadRadio.CheckedChanged += new System.EventHandler(this.modeReadRadio_CheckedChanged);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.rawSerialLog);
+            this.groupBox2.Location = new System.Drawing.Point(682, 143);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(88, 298);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Raw Data";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(782, 453);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.testOutLabel);
             this.Controls.Add(this.connectionBox);
+            this.Controls.Add(this.groupBox2);
             this.Name = "Form1";
             this.Text = "Metric Control Panel";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -180,8 +191,8 @@
             this.connectionBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -191,12 +202,13 @@
         private Button connectBtn;
         private Label portLabel;
         private ComboBox portCombo;
-        private Label testOutLabel;
+        private Label rawSerialLog;
         private Button pingBtn;
         private Button disconnectBtn;
         private RadioButton modeIdleRadio;
         private GroupBox groupBox1;
         private RadioButton modeScanRadio;
         private RadioButton modeReadRadio;
+        private GroupBox groupBox2;
     }
 }
