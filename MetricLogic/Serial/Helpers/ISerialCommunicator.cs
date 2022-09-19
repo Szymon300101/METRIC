@@ -10,10 +10,10 @@ namespace MetricLogic.Serial.Helpers
 {
     internal interface ISerialCommunicator
     {
-        internal void Begin(SerialConnection connection);
-        internal void Read();
-        internal void Send(SerialMessage msg);
-        internal void SetReadCT(CancellationToken token);
-        internal void SetRawSerialListener(IRawSerialListener rawSerialListener);
+        void Begin(SerialConnection connection);
+        void Read();
+        void Send(SerialMessage msg);
+        void SetReadCT(CancellationToken token);
+        void SetRawSerialListener(IRawSerialListener rawSerialListener);
     }
 }
