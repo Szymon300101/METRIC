@@ -39,6 +39,7 @@ void loop() {
     case StateEnum::s_idle :
       LED.set(200,2000);
 
+      if(button.isPressed()) comm.changeMode(ModeEnum::read);
       if(comm.r_mode == ModeEnum::read) state = StateEnum::s_set_read;
       if(comm.r_mode == ModeEnum::scan) state = StateEnum::s_scan;
     break;
@@ -53,6 +54,7 @@ void loop() {
       tsl.read();
       comm.send(SerialHeaderEnum::READING,tsl.get_center());
 
+      if(button.isPressed()) comm.changeMode(ModeEnum::idle);
       if(comm.r_mode == ModeEnum::idle) state = StateEnum::s_idle;
       if(comm.r_mode == ModeEnum::scan) state = StateEnum::s_scan;
     break;
@@ -61,6 +63,7 @@ void loop() {
       LED.set(1000,400);
       if(!comm.waiting)
       {
+        tsl.read();
         comm.send(SerialHeaderEnum::SCAN,255);
         for(int i=0;i<NPIXELS;i++)
         {

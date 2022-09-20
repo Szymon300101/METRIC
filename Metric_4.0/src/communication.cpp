@@ -21,7 +21,6 @@ class Comm
   void send(SerialMessage msg)
   {
     Serial.write(msg.Header);
-    delay(1);
     Serial.write(msg.Value);
   }
 
@@ -61,6 +60,7 @@ class Comm
         break;
         case SerialHeaderEnum::HELLO:
             is_connected = true;
+            send(SerialHeaderEnum::MODE, r_mode);
         break;
         case SerialHeaderEnum::MODE:
           r_mode = (ModeEnum)message.Value;
@@ -70,6 +70,12 @@ class Comm
 
       message.Header = SerialHeaderEnum::NONE;
     }
+  }
+
+  void changeMode(ModeEnum mode)
+  {
+    r_mode = mode;
+    send(SerialHeaderEnum::MODE, r_mode);
   }
   
 };
