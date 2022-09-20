@@ -38,9 +38,30 @@ namespace MetricLogic.ChartData
             return readyData;
         }
 
-        public void SaveCalibratedToFile(string filePath)
+        public void SaveCalibratedToFile(string fileName)
+        {
+            if (fileName.EndsWith(".csv"))
+                saveCalibratedToCsv(fileName);
+            else
+                saveCalibratedToJson(fileName);
+        }
+
+        private void saveCalibratedToJson(string filePath)
         {
             FileIO.SerializeToFile(filePath, Calibrator.Calibrate(rawData));
+        }
+
+        private void saveCalibratedToCsv(string filePath)
+        {
+            string contents = "";
+            int index = 1;
+            foreach (var item in Calibrator.Calibrate(rawData))
+            {
+                contents += (index++).ToString() + "; ";
+                contents += item.ToString("0.####") + "\n";
+            }
+
+            FileIO.WriteTxt(filePath, contents);
         }
     }
 }

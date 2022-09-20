@@ -332,7 +332,7 @@ namespace MetricApp
         {
             SaveFileDialog dlg = new SaveFileDialog();
             dlg.AddExtension = true;
-            dlg.Filter = "JSON files (*.json)|*.json";
+            dlg.Filter = "JSON file (*.json)|*.json";
             DialogResult result = dlg.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -344,20 +344,19 @@ namespace MetricApp
         {
             SaveFileDialog dlg = new SaveFileDialog();
             dlg.AddExtension = true;
-            dlg.Filter = "JSON files (*.json)|*.json";
+            dlg.Filter = "CSV file (*.csv)|*.csv|JSON file (*.json)|*.json";
             DialogResult result = dlg.ShowDialog();
             if (result == DialogResult.OK)
             {
                 readingChartData.SaveCalibratedToFile(dlg.FileName);
             }
-
         }
 
         private void dataLoadBtn_Click(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.AddExtension = true;
-            dlg.Filter = "JSON files (*.json)|*.json";
+            dlg.Filter = "Data file (*.json;*.txt)|*.json;*.txt";
             DialogResult result = dlg.ShowDialog();
             if (result == DialogResult.OK)
             {

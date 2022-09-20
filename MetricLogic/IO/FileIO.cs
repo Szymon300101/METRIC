@@ -34,5 +34,9 @@ namespace MetricLogic.IO
 
             FileIO.WriteTxt(filePath, contents);
         }
+
+        public static void SaveListToCsv(string filePath, IEnumerable<double> values)
+        {
+        }
     }
 }
