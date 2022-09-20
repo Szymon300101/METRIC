@@ -16,7 +16,7 @@ namespace MetricLogic
 
         private SerialConnection _connection;
         private IBoardModeListener _modeListener;
-        private IReadingsListener _readingsListener;
+        private IBoardDataListener _dataListener;
 
         public BoardModeEnum Mode
         {
@@ -42,9 +42,9 @@ namespace MetricLogic
             _modeListener = modeListener;
         }
 
-        public void AddReadingsListener(IReadingsListener readingsListener)
+        public void AddReadingsListener(IBoardDataListener readingsListener)
         {
-            _readingsListener = readingsListener;
+            _dataListener = readingsListener;
         }
 
         private void processMessage(SerialMessage msg)
@@ -61,8 +61,12 @@ namespace MetricLogic
                     _connection.Send(SerialMessage.Hello);
                     break;
                 case SerialHeaderEnum.READING:
-                    if (_readingsListener != null)
-                        _readingsListener.OnNewReading(msg.Value);
+                    if (_dataListener != null)
+                        _dataListener.OnNewReading(msg.Value);
+                    break;
+                case SerialHeaderEnum.SCAN:
+                    if (_dataListener != null)
+                        _dataListener.OnNewScan(msg.Value);
                     break;
                 case SerialHeaderEnum.MODE:
                     Mode = EnumUtils.EnumFromInt<BoardModeEnum>(msg.Value);

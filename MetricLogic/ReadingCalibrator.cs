@@ -26,6 +26,16 @@ namespace MetricLogic
             return (reading * Scaling) + Offset;
         }
 
+        public List<double> Calibrate(List<int> readings)
+        {
+            List<double> calibrated = new List<double>();
+            foreach (var item in readings)
+            {
+                calibrated.Add(this.Calibrate(item));
+            }
+            return calibrated;
+        }
+
         public void SetFromReading(double calValue, int reading)
         {
             Offset = calValue - (reading * Scaling);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,13 @@ namespace MetricLogic.IO
                 outputDir.Create();
 
             File.WriteAllText(filePath, text);
+        }
+
+        public static void SerializeToFile(string filePath, object value)
+        {
+            string contents = JsonConvert.SerializeObject(value, Formatting.Indented);
+
+            FileIO.WriteTxt(filePath, contents);
         }
     }
 }

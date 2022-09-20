@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MetricLogic.Helpers
 {
-    public interface IReadingsListener
+    public interface IBoardDataListener
     {
         void OnNewReading(int reading);
+        void OnNewScan(int value);
     }
 }

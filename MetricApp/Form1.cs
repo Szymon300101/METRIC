@@ -1,4 +1,5 @@
 using MetricLogic;
+using MetricLogic.ChartData;
 using MetricLogic.Helpers;
 using MetricLogic.Serial;
 using MetricLogic.Serial.Helpers;
@@ -7,18 +8,19 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace MetricApp
 {
-    public partial class Form1 : Form, ISerialStateListener, IBoardModeListener, IRawSerialListener, IReadingsListener
+    public partial class Form1 : Form, ISerialStateListener, IBoardModeListener, IRawSerialListener, IBoardDataListener
     {
         private static readonly int BAUD_RATE = 115200;
 
         private delegate void SerialStateCallback(SerialStateEnum state);
         private delegate void BoardModeCallback(BoardModeEnum mode);
         private delegate void RawSerialCallback(int value);
-        private delegate void ReadingsCallback(int value);
+        private delegate void BoardDataCallback(int value);
 
         SerialConnection connection;
         BoardMenager board;
-        ChartData chartData;
+        ChartReadingData readingChartData;
+        ChartScanData scanChartData;
 
         public Form1()
         {
@@ -27,7 +29,8 @@ namespace MetricApp
 
             connection = new SerialConnection();
             board = new BoardMenager(connection);
-            chartData = new ChartData();
+            readingChartData = new ChartReadingData();
+            scanChartData = new ChartScanData();
             board.AddModeListener(this);
             board.AddReadingsListener(this);
             connection.AddStateListener(this);
@@ -44,14 +47,14 @@ namespace MetricApp
             //chartData.Calibrator.Scaling = (double)this.scalingInput.Value;
             //chartData.Calibrator.Offset = (double)this.offsetInput.Value;
             //chartData.Calibrator.SaveDefault();
-            chartData.Calibrator.LoadDefault();
+            readingChartData.Calibrator.LoadDefault();
             refreshCalibration();
         }
 
         private void refreshCalibration()
         {
-            this.scalingInput.Value = (decimal)chartData.Calibrator.Scaling;
-            this.offsetInput.Value = (decimal)chartData.Calibrator.Offset;
+            this.scalingInput.Value = (decimal)readingChartData.Calibrator.Scaling;
+            this.offsetInput.Value = (decimal)readingChartData.Calibrator.Offset;
         }
 
         private void connectBtn_Click(object sender, EventArgs e)
@@ -149,7 +152,7 @@ namespace MetricApp
         {
             if (this.rawSerialLog.InvokeRequired)
             {
-                ReadingsCallback d = new ReadingsCallback(addReading);
+                BoardDataCallback d = new BoardDataCallback(addReading);
                 this.Invoke(d, new object[] { reading });
             }
             else
@@ -158,29 +161,67 @@ namespace MetricApp
             }
         }
 
+        public void OnNewScan(int value)
+        {
+            if (this.rawSerialLog.InvokeRequired)
+            {
+                BoardDataCallback d = new BoardDataCallback(addNewScanValue);
+                this.Invoke(d, new object[] { value });
+            }
+            else
+            {
+                addNewScanValue(value);
+            }
+        }
+
+        public void addNewScanValue(int value)
+        {
+            scanChartData.AddData(value);
+            refreshChart();
+        }
+
         private void addReading(int reading)
         {
-            chartData.AddReading(reading);
+            readingChartData.AddData(reading);
             refreshChart();
             refreshDataInfo();
         }
 
         private void refreshChart()
         {
-            Dictionary<int, double> data = chartData.GetChartData();
+            Dictionary<int, double> data = getDataForChart();
 
+            insertToChart(data);
+        }
+
+        private Dictionary<int, double> getDataForChart()
+        {
+            switch (board.Mode)
+            {
+                case BoardModeEnum.read:
+                    return readingChartData.GetChartData();
+                case BoardModeEnum.scan:
+                    return scanChartData.GetChartData();
+                case BoardModeEnum.idle:
+                    return readingChartData.GetChartData();
+                default:
+                    return new Dictionary<int, double>();
+            }
+        }
+
+        private void insertToChart(Dictionary<int, double> data)
+        {
             dataChart.Series["dataSeries"].Points.Clear();
 
             foreach (var item in data)
             {
                 dataChart.Series["dataSeries"].Points.Add(new DataPoint(item.Key, item.Value));
             }
-
         }
 
         private void refreshDataInfo()
         {
-            dataInfoLabel.Text = $"Count: {chartData.GetCount()}";
+            dataInfoLabel.Text = $"Count: {readingChartData.GetCount()}";
         }
 
         private void appendRawSerialLog(int value)
@@ -192,6 +233,7 @@ namespace MetricApp
         {
             if (modeIdleRadio.Checked)
                 connection.Send(SerialHeaderEnum.MODE, (int)BoardModeEnum.idle);
+            refreshChart();
         }
 
         private void modeReadRadio_CheckedChanged(object sender, EventArgs e)
@@ -219,30 +261,30 @@ namespace MetricApp
 
         private void clearBtn_Click(object sender, EventArgs e)
         {
-            chartData.Clear();
+            readingChartData.Clear();
             refreshDataInfo();
             refreshChart();
         }
 
         private void calibSaveBtn_Click(object sender, EventArgs e)
         {
-            chartData.Calibrator.SaveDefault();
+            readingChartData.Calibrator.SaveDefault();
         }
 
         private void calibLoadBtn_Click(object sender, EventArgs e)
         {
-            chartData.Calibrator.LoadDefault();
+            readingChartData.Calibrator.LoadDefault();
             refreshCalibration();
         }
 
         private void scalingInput_ValueChanged(object sender, EventArgs e)
         {
-            chartData.Calibrator.Scaling = (double)scalingInput.Value;
+            readingChartData.Calibrator.Scaling = (double)scalingInput.Value;
         }
 
         private void offsetInput_ValueChanged(object sender, EventArgs e)
         {
-            chartData.Calibrator.Offset = (double)offsetInput.Value;
+            readingChartData.Calibrator.Offset = (double)offsetInput.Value;
         }
 
         private void InitializeCustomComponents()
@@ -264,8 +306,10 @@ namespace MetricApp
             chartArea.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
             chartArea.AxisY.LabelStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             chartArea.AxisY.LineColor = System.Drawing.Color.Black;
+            chartArea.AxisY.IsStartedFromZero = false;
             chartArea.Name = "Default";
             chartArea.BackColor = System.Drawing.Color.Transparent;
+            chartArea.AxisY.Minimum = Double.NaN;
             this.dataChart.BackColor = System.Drawing.Color.Transparent;
             dataSeries.ChartArea = "Default";
             dataSeries.ChartType = SeriesChartType.Line;
@@ -280,8 +324,47 @@ namespace MetricApp
 
         private void calibBtn_Click(object sender, EventArgs e)
         {
-            chartData.Calibrator.SetFromReading((double)calibReadInput.Value, chartData.GetLastRawReading());
+            readingChartData.Calibrator.SetFromReading((double)calibReadInput.Value, readingChartData.GetLastRawReading());
             refreshCalibration();
+        }
+
+        private void dataSaveRawBtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.AddExtension = true;
+            dlg.Filter = "JSON files (*.json)|*.json";
+            DialogResult result = dlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                readingChartData.SaveToFile(dlg.FileName);
+            }
+        }
+
+        private void dataSaveCalibBtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.AddExtension = true;
+            dlg.Filter = "JSON files (*.json)|*.json";
+            DialogResult result = dlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                readingChartData.SaveCalibratedToFile(dlg.FileName);
+            }
+
+        }
+
+        private void dataLoadBtn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.AddExtension = true;
+            dlg.Filter = "JSON files (*.json)|*.json";
+            DialogResult result = dlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                readingChartData.LoadFromFile(dlg.FileName);
+                refreshChart();
+                refreshDataInfo();
+            }
         }
     }
 }

@@ -44,9 +44,10 @@ namespace MetricApp
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chartBox = new System.Windows.Forms.GroupBox();
             this.dataBox = new System.Windows.Forms.GroupBox();
+            this.dataSaveCalibBtn = new System.Windows.Forms.Button();
             this.dataLoadBtn = new System.Windows.Forms.Button();
             this.dataInfoLabel = new System.Windows.Forms.Label();
-            this.dataSaveBtn = new System.Windows.Forms.Button();
+            this.dataSaveRawBtn = new System.Windows.Forms.Button();
             this.clearBtn = new System.Windows.Forms.Button();
             this.calibrationBox = new System.Windows.Forms.GroupBox();
             this.calibLoadBtn = new System.Windows.Forms.Button();
@@ -135,7 +136,7 @@ namespace MetricApp
             this.rawSerialLog.BackColor = System.Drawing.SystemColors.Control;
             this.rawSerialLog.Location = new System.Drawing.Point(6, 26);
             this.rawSerialLog.Name = "rawSerialLog";
-            this.rawSerialLog.Size = new System.Drawing.Size(76, 260);
+            this.rawSerialLog.Size = new System.Drawing.Size(91, 260);
             this.rawSerialLog.TabIndex = 1;
             // 
             // modeIdleRadio
@@ -159,7 +160,7 @@ namespace MetricApp
             this.groupBox1.Controls.Add(this.modeIdleRadio);
             this.groupBox1.Location = new System.Drawing.Point(555, 143);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(121, 125);
+            this.groupBox1.Size = new System.Drawing.Size(106, 173);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Board Mode";
@@ -191,12 +192,12 @@ namespace MetricApp
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.rawSerialLog);
-            this.groupBox2.Location = new System.Drawing.Point(682, 143);
+            this.groupBox2.Location = new System.Drawing.Point(667, 143);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(88, 308);
+            this.groupBox2.Size = new System.Drawing.Size(103, 308);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Raw Data";
+            this.groupBox2.Text = "Serial Log";
             // 
             // chartBox
             // 
@@ -209,47 +210,60 @@ namespace MetricApp
             // 
             // dataBox
             // 
+            this.dataBox.Controls.Add(this.dataSaveCalibBtn);
             this.dataBox.Controls.Add(this.dataLoadBtn);
             this.dataBox.Controls.Add(this.dataInfoLabel);
-            this.dataBox.Controls.Add(this.dataSaveBtn);
+            this.dataBox.Controls.Add(this.dataSaveRawBtn);
             this.dataBox.Controls.Add(this.clearBtn);
-            this.dataBox.Location = new System.Drawing.Point(555, 279);
+            this.dataBox.Location = new System.Drawing.Point(441, 322);
             this.dataBox.Name = "dataBox";
-            this.dataBox.Size = new System.Drawing.Size(121, 172);
+            this.dataBox.Size = new System.Drawing.Size(220, 129);
             this.dataBox.TabIndex = 6;
             this.dataBox.TabStop = false;
             this.dataBox.Text = "Data";
             // 
+            // dataSaveCalibBtn
+            // 
+            this.dataSaveCalibBtn.Location = new System.Drawing.Point(14, 94);
+            this.dataSaveCalibBtn.Name = "dataSaveCalibBtn";
+            this.dataSaveCalibBtn.Size = new System.Drawing.Size(94, 27);
+            this.dataSaveCalibBtn.TabIndex = 4;
+            this.dataSaveCalibBtn.Text = "Save Calib.";
+            this.dataSaveCalibBtn.UseVisualStyleBackColor = true;
+            this.dataSaveCalibBtn.Click += new System.EventHandler(this.dataSaveCalibBtn_Click);
+            // 
             // dataLoadBtn
             // 
-            this.dataLoadBtn.Location = new System.Drawing.Point(16, 86);
+            this.dataLoadBtn.Location = new System.Drawing.Point(114, 61);
             this.dataLoadBtn.Name = "dataLoadBtn";
-            this.dataLoadBtn.Size = new System.Drawing.Size(94, 29);
+            this.dataLoadBtn.Size = new System.Drawing.Size(94, 27);
             this.dataLoadBtn.TabIndex = 3;
-            this.dataLoadBtn.Text = "Load";
+            this.dataLoadBtn.Text = "Load Raw";
             this.dataLoadBtn.UseVisualStyleBackColor = true;
+            this.dataLoadBtn.Click += new System.EventHandler(this.dataLoadBtn_Click);
             // 
             // dataInfoLabel
             // 
-            this.dataInfoLabel.Location = new System.Drawing.Point(16, 23);
+            this.dataInfoLabel.Location = new System.Drawing.Point(14, 30);
             this.dataInfoLabel.Name = "dataInfoLabel";
             this.dataInfoLabel.Size = new System.Drawing.Size(94, 25);
             this.dataInfoLabel.TabIndex = 2;
             // 
-            // dataSaveBtn
+            // dataSaveRawBtn
             // 
-            this.dataSaveBtn.Location = new System.Drawing.Point(16, 121);
-            this.dataSaveBtn.Name = "dataSaveBtn";
-            this.dataSaveBtn.Size = new System.Drawing.Size(94, 29);
-            this.dataSaveBtn.TabIndex = 1;
-            this.dataSaveBtn.Text = "Save";
-            this.dataSaveBtn.UseVisualStyleBackColor = true;
+            this.dataSaveRawBtn.Location = new System.Drawing.Point(114, 94);
+            this.dataSaveRawBtn.Name = "dataSaveRawBtn";
+            this.dataSaveRawBtn.Size = new System.Drawing.Size(94, 27);
+            this.dataSaveRawBtn.TabIndex = 1;
+            this.dataSaveRawBtn.Text = "Save Raw";
+            this.dataSaveRawBtn.UseVisualStyleBackColor = true;
+            this.dataSaveRawBtn.Click += new System.EventHandler(this.dataSaveRawBtn_Click);
             // 
             // clearBtn
             // 
-            this.clearBtn.Location = new System.Drawing.Point(16, 51);
+            this.clearBtn.Location = new System.Drawing.Point(14, 61);
             this.clearBtn.Name = "clearBtn";
-            this.clearBtn.Size = new System.Drawing.Size(94, 29);
+            this.clearBtn.Size = new System.Drawing.Size(94, 27);
             this.clearBtn.TabIndex = 0;
             this.clearBtn.Text = "Clear";
             this.clearBtn.UseVisualStyleBackColor = true;
@@ -428,7 +442,7 @@ namespace MetricApp
         private GroupBox chartBox;
         private GroupBox dataBox;
         private Label dataInfoLabel;
-        private Button dataSaveBtn;
+        private Button dataSaveRawBtn;
         private Button clearBtn;
         private GroupBox calibrationBox;
         private Label label2;
@@ -441,5 +455,6 @@ namespace MetricApp
         private Button calibSaveBtn;
         private Button dataLoadBtn;
         private Button calibLoadBtn;
+        private Button dataSaveCalibBtn;
     }
 }

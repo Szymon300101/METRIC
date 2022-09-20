@@ -1,39 +1,28 @@
-﻿using MetricLogic.Helpers;
+﻿using MetricLogic.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MetricLogic
+namespace MetricLogic.ChartData
 {
-    public class ChartData
+    public class ChartReadingData : ChartData
     {
         public ReadingCalibrator Calibrator { get; private set; }
-        private List<int> rawData;
-
         private static readonly int ptsToShow = 50;
-
-        public ChartData()
+        public ChartReadingData()
         {
             Calibrator = new ReadingCalibrator();
             rawData = new List<int>();
         }
 
-        public void AddReading(int reading)
+        public override void AddData(int value)
         {
-            rawData.Add(reading);
+            rawData.Add(value);
         }
 
-        public int GetLastRawReading()
-        {
-            if(rawData.Count > 0)
-                return rawData.Last();
-            else
-                return 0;
-        }
-
-        public Dictionary<int, double> GetChartData()
+        public override Dictionary<int, double> GetChartData()
         {
             Dictionary<int, double> readyData = new Dictionary<int, double>();
 
@@ -49,14 +38,9 @@ namespace MetricLogic
             return readyData;
         }
 
-        public int GetCount()
+        public void SaveCalibratedToFile(string filePath)
         {
-            return rawData.Count;
-        }
-
-        public void Clear()
-        {
-            rawData.Clear();
+            FileIO.SerializeToFile(filePath, Calibrator.Calibrate(rawData));
         }
     }
 }
