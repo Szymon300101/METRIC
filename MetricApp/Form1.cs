@@ -40,13 +40,7 @@ namespace MetricApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            foreach (string s in SerialConnection.GetPortNames())
-            {
-                portCombo.Items.Add(s);
-            }
-            //chartData.Calibrator.Scaling = (double)this.scalingInput.Value;
-            //chartData.Calibrator.Offset = (double)this.offsetInput.Value;
-            //chartData.Calibrator.SaveDefault();
+            showConnectionState(is_connected: false);
             readingChartData.Calibrator.LoadDefault();
             refreshCalibration();
         }
@@ -55,6 +49,7 @@ namespace MetricApp
         {
             this.scalingInput.Value = (decimal)readingChartData.Calibrator.Scaling;
             this.offsetInput.Value = (decimal)readingChartData.Calibrator.Offset;
+            this.smoothingInput.Value = (decimal)readingChartData.Calibrator.Smoothing;
         }
 
         private void connectBtn_Click(object sender, EventArgs e)
@@ -63,28 +58,47 @@ namespace MetricApp
 
         }
 
+        private void portCombo_DropDown(object sender, EventArgs e)
+        {
+            refreshSerialPorts();
+        }
+
+        private void refreshSerialPorts()
+        {
+            portCombo.Items.Clear();
+            foreach (string s in SerialConnection.GetPortNames())
+            {
+                portCombo.Items.Add(s);
+            }
+        }
+
         private void displaySerialState(SerialStateEnum state)
         {
             switch (state)
             {
                 case SerialStateEnum.disconnected:
-                    disconnectBtn.Visible = false;
-                    pingBtn.Visible = false;
-                    connectBtn.Visible = true;
-                    connectBtn.Enabled = true;
-                    portCombo.Enabled = true;
+                    showConnectionState(is_connected: false);
                     break;
                 case SerialStateEnum.connecting:
                     connectBtn.Enabled = false;
-                    portCombo.Enabled = false;
                     break;
                 case SerialStateEnum.connected:
-                    disconnectBtn.Visible = true;
-                    disconnectBtn.Enabled = true;
-                    pingBtn.Visible = true;
-                    connectBtn.Visible = false;
+                    showConnectionState(is_connected: true);
                     break;
             }
+        }
+
+        private void showConnectionState(bool is_connected)
+        {
+            disconnectBtn.Visible = is_connected;
+            disconnectBtn.Enabled = is_connected;
+            modeIdleRadio.Enabled = is_connected;
+            modeReadRadio.Enabled = is_connected;
+            modeScanRadio.Enabled = is_connected;
+
+            connectBtn.Visible = !is_connected;
+            connectBtn.Enabled = !is_connected;
+            portCombo.Enabled = !is_connected;
         }
 
         private void displayBoardMode(BoardModeEnum mode)
@@ -280,11 +294,19 @@ namespace MetricApp
         private void scalingInput_ValueChanged(object sender, EventArgs e)
         {
             readingChartData.Calibrator.Scaling = (double)scalingInput.Value;
+            refreshChart();
         }
 
         private void offsetInput_ValueChanged(object sender, EventArgs e)
         {
             readingChartData.Calibrator.Offset = (double)offsetInput.Value;
+            refreshChart();
+        }
+
+        private void smoothingInput_ValueChanged(object sender, EventArgs e)
+        {
+            readingChartData.Calibrator.Smoothing = (int)smoothingInput.Value;
+            refreshChart();
         }
 
         private void InitializeCustomComponents()
@@ -309,7 +331,6 @@ namespace MetricApp
             chartArea.AxisY.IsStartedFromZero = false;
             chartArea.Name = "Default";
             chartArea.BackColor = System.Drawing.Color.Transparent;
-            chartArea.AxisY.Minimum = Double.NaN;
             this.dataChart.BackColor = System.Drawing.Color.Transparent;
             dataSeries.ChartArea = "Default";
             dataSeries.ChartType = SeriesChartType.Line;
@@ -336,7 +357,9 @@ namespace MetricApp
             DialogResult result = dlg.ShowDialog();
             if (result == DialogResult.OK)
             {
+                dataSaveRawBtn.Enabled = false;
                 readingChartData.SaveToFile(dlg.FileName);
+                dataSaveRawBtn.Enabled = true;
             }
         }
 
@@ -348,7 +371,9 @@ namespace MetricApp
             DialogResult result = dlg.ShowDialog();
             if (result == DialogResult.OK)
             {
+                dataSaveCalibBtn.Enabled = false;
                 readingChartData.SaveCalibratedToFile(dlg.FileName);
+                dataSaveCalibBtn.Enabled = true;
             }
         }
 
@@ -360,9 +385,11 @@ namespace MetricApp
             DialogResult result = dlg.ShowDialog();
             if (result == DialogResult.OK)
             {
+                dataLoadBtn.Enabled = false;
                 readingChartData.LoadFromFile(dlg.FileName);
                 refreshChart();
                 refreshDataInfo();
+                dataLoadBtn.Enabled = true;
             }
         }
     }

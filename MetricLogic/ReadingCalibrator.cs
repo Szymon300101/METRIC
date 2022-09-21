@@ -12,6 +12,7 @@ namespace MetricLogic
     {
         public double Scaling { get; set; }
         public double Offset { get; set; }
+        public int Smoothing { get; set; }
 
         private static readonly string defaultPath = FileIO.appPath + "metricCalibration.json";
 
@@ -19,21 +20,48 @@ namespace MetricLogic
         {
             Scaling = 0.008;
             Offset = 0;
+            Smoothing = 1;
         }
 
-        public double Calibrate(int reading)
-        {
-            return (reading * Scaling) + Offset;
-        }
-
-        public List<double> Calibrate(List<int> readings)
+        public List<double> SmoothAndCalibrate(List<int> readings)
         {
             List<double> calibrated = new List<double>();
-            foreach (var item in readings)
+            for (int i = 0; i < readings.Count; i++)
             {
-                calibrated.Add(this.Calibrate(item));
+                calibrated.Add(SmoothAndCalibrate(readings,i));
             }
             return calibrated;
+        }
+
+        public double SmoothAndCalibrate(List<int> allData, int indexToSmooth)
+        {
+            return calibrate(smooth(allData,indexToSmooth));
+        }
+
+        private double smooth(List<int> allData, int indexToSmooth)
+        {
+            List<int> history = allData.Take(indexToSmooth).ToList();
+            return runningAvg(allData[indexToSmooth], history);
+        }
+
+        public double runningAvg(int value, List<int> history)
+        {
+            if (history.Count == 0)
+                return value;
+
+            int runningAvgSize = Math.Min(Smoothing, history.Count);
+
+            double sum = value;
+            for (int i = 0; i < runningAvgSize-1; i++)
+            {
+                sum += history[history.Count - i - 1];
+            }
+            return sum / runningAvgSize;
+        }
+
+        private double calibrate(double reading)
+        {
+            return (reading * Scaling) + Offset;
         }
 
         public void SetFromReading(double calValue, int reading)
@@ -60,6 +88,7 @@ namespace MetricLogic
 
             this.Scaling = readingCalibrator.Scaling;
             this.Offset = readingCalibrator.Offset;
+            this.Smoothing = readingCalibrator.Smoothing;
         }
 
         private void saveToFile(string filePath)

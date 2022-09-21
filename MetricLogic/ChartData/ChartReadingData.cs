@@ -10,7 +10,7 @@ namespace MetricLogic.ChartData
     public class ChartReadingData : ChartData
     {
         public ReadingCalibrator Calibrator { get; private set; }
-        private static readonly int ptsToShow = 50;
+        private static readonly int ptsToShow = 1000;
         public ChartReadingData()
         {
             Calibrator = new ReadingCalibrator();
@@ -30,7 +30,7 @@ namespace MetricLogic.ChartData
 
             for (int i = 0; i < dataCount; i++)
             {
-                readyData.Add(dataCount - i, Calibrator.Calibrate(rawData[dataCount - i - 1]));
+                readyData.Add(i, Calibrator.SmoothAndCalibrate(rawData, i));
                 if (i > ptsToShow)
                     break;
             }
@@ -48,14 +48,14 @@ namespace MetricLogic.ChartData
 
         private void saveCalibratedToJson(string filePath)
         {
-            FileIO.SerializeToFile(filePath, Calibrator.Calibrate(rawData));
+            FileIO.SerializeToFile(filePath, Calibrator.SmoothAndCalibrate(rawData));
         }
 
         private void saveCalibratedToCsv(string filePath)
         {
             string contents = "";
             int index = 1;
-            foreach (var item in Calibrator.Calibrate(rawData))
+            foreach (var item in Calibrator.SmoothAndCalibrate(rawData))
             {
                 contents += (index++).ToString() + "; ";
                 contents += item.ToString("0.####") + "\n";

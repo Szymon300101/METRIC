@@ -31,14 +31,13 @@ namespace MetricApp
         private void InitializeComponent()
         {
             this.connectionBox = new System.Windows.Forms.GroupBox();
-            this.disconnectBtn = new System.Windows.Forms.Button();
-            this.pingBtn = new System.Windows.Forms.Button();
             this.connectBtn = new System.Windows.Forms.Button();
             this.portLabel = new System.Windows.Forms.Label();
             this.portCombo = new System.Windows.Forms.ComboBox();
+            this.disconnectBtn = new System.Windows.Forms.Button();
             this.rawSerialLog = new System.Windows.Forms.Label();
             this.modeIdleRadio = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.boardModeBox = new System.Windows.Forms.GroupBox();
             this.modeScanRadio = new System.Windows.Forms.RadioButton();
             this.modeReadRadio = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -50,6 +49,8 @@ namespace MetricApp
             this.dataSaveRawBtn = new System.Windows.Forms.Button();
             this.clearBtn = new System.Windows.Forms.Button();
             this.calibrationBox = new System.Windows.Forms.GroupBox();
+            this.smoothingInput = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.calibLoadBtn = new System.Windows.Forms.Button();
             this.calibSaveBtn = new System.Windows.Forms.Button();
             this.calibBtn = new System.Windows.Forms.Button();
@@ -60,10 +61,11 @@ namespace MetricApp
             this.label1 = new System.Windows.Forms.Label();
             this.scalingInput = new System.Windows.Forms.NumericUpDown();
             this.connectionBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.boardModeBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.dataBox.SuspendLayout();
             this.calibrationBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.smoothingInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.calibReadInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.scalingInput)).BeginInit();
@@ -71,38 +73,16 @@ namespace MetricApp
             // 
             // connectionBox
             // 
-            this.connectionBox.Controls.Add(this.disconnectBtn);
-            this.connectionBox.Controls.Add(this.pingBtn);
             this.connectionBox.Controls.Add(this.connectBtn);
             this.connectionBox.Controls.Add(this.portLabel);
             this.connectionBox.Controls.Add(this.portCombo);
+            this.connectionBox.Controls.Add(this.disconnectBtn);
             this.connectionBox.Location = new System.Drawing.Point(555, 12);
             this.connectionBox.Name = "connectionBox";
             this.connectionBox.Size = new System.Drawing.Size(215, 125);
             this.connectionBox.TabIndex = 0;
             this.connectionBox.TabStop = false;
             this.connectionBox.Text = "Connection";
-            // 
-            // disconnectBtn
-            // 
-            this.disconnectBtn.Location = new System.Drawing.Point(89, 76);
-            this.disconnectBtn.Name = "disconnectBtn";
-            this.disconnectBtn.Size = new System.Drawing.Size(106, 29);
-            this.disconnectBtn.TabIndex = 4;
-            this.disconnectBtn.Text = "Disconnect";
-            this.disconnectBtn.UseVisualStyleBackColor = true;
-            this.disconnectBtn.Visible = false;
-            this.disconnectBtn.Click += new System.EventHandler(this.disconnectBtn_Click);
-            // 
-            // pingBtn
-            // 
-            this.pingBtn.Location = new System.Drawing.Point(16, 76);
-            this.pingBtn.Name = "pingBtn";
-            this.pingBtn.Size = new System.Drawing.Size(53, 29);
-            this.pingBtn.TabIndex = 3;
-            this.pingBtn.Text = "Ping";
-            this.pingBtn.UseVisualStyleBackColor = true;
-            this.pingBtn.Visible = false;
             // 
             // connectBtn
             // 
@@ -130,6 +110,18 @@ namespace MetricApp
             this.portCombo.Name = "portCombo";
             this.portCombo.Size = new System.Drawing.Size(106, 28);
             this.portCombo.TabIndex = 0;
+            this.portCombo.DropDown += new System.EventHandler(this.portCombo_DropDown);
+            // 
+            // disconnectBtn
+            // 
+            this.disconnectBtn.Location = new System.Drawing.Point(16, 76);
+            this.disconnectBtn.Name = "disconnectBtn";
+            this.disconnectBtn.Size = new System.Drawing.Size(179, 29);
+            this.disconnectBtn.TabIndex = 4;
+            this.disconnectBtn.Text = "Disconnect";
+            this.disconnectBtn.UseVisualStyleBackColor = true;
+            this.disconnectBtn.Visible = false;
+            this.disconnectBtn.Click += new System.EventHandler(this.disconnectBtn_Click);
             // 
             // rawSerialLog
             // 
@@ -153,17 +145,17 @@ namespace MetricApp
             this.modeIdleRadio.UseVisualStyleBackColor = true;
             this.modeIdleRadio.CheckedChanged += new System.EventHandler(this.modeIdleRadio_CheckedChanged);
             // 
-            // groupBox1
+            // boardModeBox
             // 
-            this.groupBox1.Controls.Add(this.modeScanRadio);
-            this.groupBox1.Controls.Add(this.modeReadRadio);
-            this.groupBox1.Controls.Add(this.modeIdleRadio);
-            this.groupBox1.Location = new System.Drawing.Point(555, 143);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(106, 173);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Board Mode";
+            this.boardModeBox.Controls.Add(this.modeScanRadio);
+            this.boardModeBox.Controls.Add(this.modeReadRadio);
+            this.boardModeBox.Controls.Add(this.modeIdleRadio);
+            this.boardModeBox.Location = new System.Drawing.Point(555, 143);
+            this.boardModeBox.Name = "boardModeBox";
+            this.boardModeBox.Size = new System.Drawing.Size(106, 173);
+            this.boardModeBox.TabIndex = 3;
+            this.boardModeBox.TabStop = false;
+            this.boardModeBox.Text = "Board Mode";
             // 
             // modeScanRadio
             // 
@@ -226,15 +218,15 @@ namespace MetricApp
             // 
             this.dataSaveCalibBtn.Location = new System.Drawing.Point(14, 94);
             this.dataSaveCalibBtn.Name = "dataSaveCalibBtn";
-            this.dataSaveCalibBtn.Size = new System.Drawing.Size(94, 27);
+            this.dataSaveCalibBtn.Size = new System.Drawing.Size(194, 27);
             this.dataSaveCalibBtn.TabIndex = 4;
-            this.dataSaveCalibBtn.Text = "Save Calib.";
+            this.dataSaveCalibBtn.Text = "Export Calibrated";
             this.dataSaveCalibBtn.UseVisualStyleBackColor = true;
             this.dataSaveCalibBtn.Click += new System.EventHandler(this.dataSaveCalibBtn_Click);
             // 
             // dataLoadBtn
             // 
-            this.dataLoadBtn.Location = new System.Drawing.Point(114, 61);
+            this.dataLoadBtn.Location = new System.Drawing.Point(14, 61);
             this.dataLoadBtn.Name = "dataLoadBtn";
             this.dataLoadBtn.Size = new System.Drawing.Size(94, 27);
             this.dataLoadBtn.TabIndex = 3;
@@ -251,7 +243,7 @@ namespace MetricApp
             // 
             // dataSaveRawBtn
             // 
-            this.dataSaveRawBtn.Location = new System.Drawing.Point(114, 94);
+            this.dataSaveRawBtn.Location = new System.Drawing.Point(114, 61);
             this.dataSaveRawBtn.Name = "dataSaveRawBtn";
             this.dataSaveRawBtn.Size = new System.Drawing.Size(94, 27);
             this.dataSaveRawBtn.TabIndex = 1;
@@ -261,7 +253,7 @@ namespace MetricApp
             // 
             // clearBtn
             // 
-            this.clearBtn.Location = new System.Drawing.Point(14, 61);
+            this.clearBtn.Location = new System.Drawing.Point(114, 28);
             this.clearBtn.Name = "clearBtn";
             this.clearBtn.Size = new System.Drawing.Size(94, 27);
             this.clearBtn.TabIndex = 0;
@@ -271,6 +263,8 @@ namespace MetricApp
             // 
             // calibrationBox
             // 
+            this.calibrationBox.Controls.Add(this.smoothingInput);
+            this.calibrationBox.Controls.Add(this.label4);
             this.calibrationBox.Controls.Add(this.calibLoadBtn);
             this.calibrationBox.Controls.Add(this.calibSaveBtn);
             this.calibrationBox.Controls.Add(this.calibBtn);
@@ -287,10 +281,42 @@ namespace MetricApp
             this.calibrationBox.TabStop = false;
             this.calibrationBox.Text = "Calibration";
             // 
+            // smoothingInput
+            // 
+            this.smoothingInput.Location = new System.Drawing.Point(323, 28);
+            this.smoothingInput.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.smoothingInput.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.smoothingInput.Name = "smoothingInput";
+            this.smoothingInput.Size = new System.Drawing.Size(94, 27);
+            this.smoothingInput.TabIndex = 17;
+            this.smoothingInput.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.smoothingInput.ValueChanged += new System.EventHandler(this.smoothingInput_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(235, 30);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(82, 20);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Smoothing";
+            // 
             // calibLoadBtn
             // 
             this.calibLoadBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.calibLoadBtn.Location = new System.Drawing.Point(323, 28);
+            this.calibLoadBtn.Location = new System.Drawing.Point(323, 61);
             this.calibLoadBtn.Name = "calibLoadBtn";
             this.calibLoadBtn.Size = new System.Drawing.Size(94, 27);
             this.calibLoadBtn.TabIndex = 15;
@@ -301,7 +327,7 @@ namespace MetricApp
             // calibSaveBtn
             // 
             this.calibSaveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.calibSaveBtn.Location = new System.Drawing.Point(323, 61);
+            this.calibSaveBtn.Location = new System.Drawing.Point(323, 94);
             this.calibSaveBtn.Name = "calibSaveBtn";
             this.calibSaveBtn.Size = new System.Drawing.Size(94, 27);
             this.calibSaveBtn.TabIndex = 14;
@@ -316,7 +342,7 @@ namespace MetricApp
             this.calibBtn.Name = "calibBtn";
             this.calibBtn.Size = new System.Drawing.Size(94, 27);
             this.calibBtn.TabIndex = 13;
-            this.calibBtn.Text = "Calibrate";
+            this.calibBtn.Text = "Calculate";
             this.calibBtn.UseVisualStyleBackColor = true;
             this.calibBtn.Click += new System.EventHandler(this.calibBtn_Click);
             // 
@@ -402,21 +428,22 @@ namespace MetricApp
             this.Controls.Add(this.calibrationBox);
             this.Controls.Add(this.dataBox);
             this.Controls.Add(this.chartBox);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.boardModeBox);
             this.Controls.Add(this.connectionBox);
             this.Controls.Add(this.groupBox2);
             this.Name = "Form1";
-            this.Text = "Metric Control Panel";
+            this.Text = "Metric Control Panel v2.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.connectionBox.ResumeLayout(false);
             this.connectionBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.boardModeBox.ResumeLayout(false);
+            this.boardModeBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.dataBox.ResumeLayout(false);
             this.calibrationBox.ResumeLayout(false);
             this.calibrationBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.smoothingInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.calibReadInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.scalingInput)).EndInit();
@@ -431,10 +458,9 @@ namespace MetricApp
         private Label portLabel;
         private ComboBox portCombo;
         private Label rawSerialLog;
-        private Button pingBtn;
         private Button disconnectBtn;
         private RadioButton modeIdleRadio;
-        private GroupBox groupBox1;
+        private GroupBox boardModeBox;
         private RadioButton modeScanRadio;
         private RadioButton modeReadRadio;
         private GroupBox groupBox2;
@@ -456,5 +482,7 @@ namespace MetricApp
         private Button dataLoadBtn;
         private Button calibLoadBtn;
         private Button dataSaveCalibBtn;
+        private NumericUpDown smoothingInput;
+        private Label label4;
     }
 }
