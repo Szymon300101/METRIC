@@ -2,10 +2,10 @@
 
 class Blinker
 {
-    bool blinkOn = false;
-    unsigned long lastBlinkTime;
+    bool is_on = false;
+    unsigned long last_blink_time;
 
-    int ledPin;
+    int led_pin;
 
     int on_time;
     int off_time;
@@ -13,12 +13,12 @@ class Blinker
     public:
         Blinker(int pin)
         {
-            this->ledPin = pin;
+            this->led_pin = pin;
         }
 
         void begin()
         {
-            pinMode(ledPin,OUTPUT);
+            pinMode(led_pin,OUTPUT);
         }
 
         void set(int on_time, int off_time)
@@ -29,21 +29,21 @@ class Blinker
 
         void blink()
         {
-            if(blinkOn)
+            if(is_on)
             {
-                if(millis() > lastBlinkTime + on_time)
+                if(millis() > last_blink_time + on_time)
                 {
-                    lastBlinkTime = millis();
-                    blinkOn = false;
-                    digitalWrite(ledPin,blinkOn);
+                    last_blink_time = millis();
+                    is_on = false;
+                    digitalWrite(led_pin,is_on);
                 }
             }else
             {
-                if(millis() > lastBlinkTime + off_time)
+                if(millis() > last_blink_time + off_time)
                 {
-                    lastBlinkTime = millis();
-                    blinkOn = true;
-                    digitalWrite(ledPin,blinkOn);
+                    last_blink_time = millis();
+                    is_on = true;
+                    digitalWrite(led_pin,is_on);
                 }
             }
         }

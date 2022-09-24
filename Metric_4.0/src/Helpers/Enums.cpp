@@ -22,8 +22,9 @@ enum ModeEnum
 enum StateEnum
 {
     s_idle,
-    s_set_read,
+    s_open_sd,
     s_read,
+    s_close_sd,
     s_scan
 };
 

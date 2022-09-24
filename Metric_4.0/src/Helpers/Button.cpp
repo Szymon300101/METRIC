@@ -17,7 +17,7 @@ class Button
             pinMode(button_pin,INPUT_PULLUP);
         }
 
-        bool isPressed()
+        bool is_pressed()
         {
             if(digitalRead(button_pin))
                 return false;

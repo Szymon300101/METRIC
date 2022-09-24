@@ -2,9 +2,7 @@
 #include "Helpers/Enums.cpp"
 #include "Helpers/SerialMessage.cpp"
 
-
-const byte ACK_OK = 10;
-const byte VAL_NULL = 255;
+#define VALUE_NULL 255
 
 class Comm
 {
@@ -53,7 +51,7 @@ class Comm
       switch(message.Header)
       {
         case PING:
-          send(SerialHeaderEnum::ACK, ACK_OK);
+          send(SerialHeaderEnum::ACK, VALUE_NULL);
         break;
         case SerialHeaderEnum::ACK:
           waiting = false;
@@ -66,13 +64,15 @@ class Comm
           r_mode = (ModeEnum)message.Value;
           send(SerialHeaderEnum::MODE, r_mode);
         break;
+        default:
+        break;
       }
 
       message.Header = SerialHeaderEnum::NONE;
     }
   }
 
-  void changeMode(ModeEnum mode)
+  void change_mode(ModeEnum mode)
   {
     r_mode = mode;
     send(SerialHeaderEnum::MODE, r_mode);
