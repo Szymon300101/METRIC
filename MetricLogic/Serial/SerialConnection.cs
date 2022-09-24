@@ -14,6 +14,8 @@ namespace MetricLogic.Serial
 {
     public class SerialConnection
     {
+        private const int BAUD_RATE = 115200;
+
         private SerialStateEnum state;
 
         internal SerialPort port;
@@ -62,7 +64,7 @@ namespace MetricLogic.Serial
             communicator.SetRawSerialListener(rawSerialListener);
         }
 
-        public void Connect(string portName, int baudRate)
+        public void Connect(string portName, int baudRate = BAUD_RATE)
         {
             initPort(portName, baudRate);
 
