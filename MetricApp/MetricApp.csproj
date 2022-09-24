@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>Metric.ico</ApplicationIcon>
+    <ApplicationIcon>Metric Icon 4.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Metric.ico" />
+    <Content Include="Metric Icon 4.ico" />
   </ItemGroup>
 
   <ItemGroup>
