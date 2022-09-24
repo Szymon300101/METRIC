@@ -30,6 +30,7 @@ namespace MetricApp
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.connectionBox = new System.Windows.Forms.GroupBox();
             this.connectBtn = new System.Windows.Forms.Button();
             this.portLabel = new System.Windows.Forms.Label();
@@ -431,6 +432,7 @@ namespace MetricApp
             this.Controls.Add(this.boardModeBox);
             this.Controls.Add(this.connectionBox);
             this.Controls.Add(this.groupBox2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Metric Control Panel v2.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
