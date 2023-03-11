@@ -27,12 +27,11 @@ namespace MetricLogic.ChartData
             Dictionary<int, double> readyData = new Dictionary<int, double>();
 
             int dataCount = rawData.Count;
+            int startPnt = Math.Max(0, dataCount-ptsToShow);
 
-            for (int i = 0; i < dataCount; i++)
+            for (int i = startPnt; i < dataCount; i++)
             {
                 readyData.Add(i, Calibrator.SmoothAndCalibrate(rawData, i));
-                if (i > ptsToShow)
-                    break;
             }
 
             return readyData;
